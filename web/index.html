@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SentinelGuard AI - Real-Time Fraud & Anomaly Detection Platform</title>
+    <!-- Google Fonts & Chart.js -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="background-globes">
+        <div class="globe globe-1"></div>
+        <div class="globe globe-2"></div>
+        <div class="globe globe-3"></div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <header class="glass-header">
+        <div class="logo-container">
+            <div class="shield-icon">🛡️</div>
+            <div>
+                <h1 class="brand-title">SentinelGuard <span class="accent-text">AI</span></h1>
+                <p class="brand-subtitle">Real-Time Financial Fraud & Anomaly Detection</p>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <div class="status-pill green" id="api-status">
+                <span class="pulse-dot"></span> API Active
+            </div>
+            <div class="model-badge" id="champion-badge">
+                Champion: <strong>XGBoost + SMOTE</strong>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <main class="app-container">
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="simulator">⚡ Live Radar Simulator</button>
+            <button class="tab-btn" data-tab="batch">📁 Batch Audit Hub</button>
+            <button class="tab-btn" data-tab="analytics">📊 Model Benchmarks</button>
+            <button class="tab-btn" data-tab="explainability">🧠 XAI & Feature Drivers</button>
+        </nav>
+
+        <!-- TAB 1: LIVE SIMULATOR -->
+        <section id="tab-simulator" class="tab-content active">
+            <div class="grid-2col">
+                <!-- Left: Form Controls & Quick Presets -->
+                <div class="glass-card">
+                    <div class="card-header">
+                        <h3>Transaction Attributes</h3>
+                        <div class="preset-buttons">
+                            <button class="preset-btn" onclick="applyPreset('normal')">Legitimate Preset</button>
+                            <button class="preset-btn warning" onclick="applyPreset('suspicious')">Night Spike</button>
+                            <button class="preset-btn danger" onclick="applyPreset('fraud')">High-Risk Fraud</button>
+                        </div>
+                    </div>
+
+                    <form id="transaction-form" class="form-grid">
+                        <div class="form-group">
+                            <label for="amount">Transaction Amount ($)</label>
+                            <input type="number" id="amount" value="125.50" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="distance_from_home">Distance from Home (km)</label>
+                            <input type="number" id="distance_from_home" value="8.4" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="time_since_last_txn">Time Since Last Txn (sec)</label>
+                            <input type="number" id="time_since_last_txn" value="1450" step="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="velocity_1h">Velocity (Txns in Past 1 Hour)</label>
+                            <input type="number" id="velocity_1h" value="1" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="device_risk_score">Device Risk Score (0.0 - 1.0)</label>
+                            <input type="range" id="device_risk_score" min="0" max="1" step="0.01" value="0.12" oninput="document.getElementById('device_val').innerText = this.value">
+                            <span class="range-val" id="device_val">0.12</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="hour_of_day">Hour of Day (0 - 23)</label>
+                            <input type="number" id="hour_of_day" min="0" max="23" value="14" required>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label><input type="checkbox" id="is_international"> International Transaction</label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <label><input type="checkbox" id="is_online" checked> Online / E-Commerce</label>
+                        </div>
+                        <div class="form-group">
+                            <label for="failed_pin_attempts">Failed PIN Attempts</label>
+                            <input type="number" id="failed_pin_attempts" min="0" max="5" value="0">
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            ⚡ Evaluate Risk Score
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Right: Risk Score Gauge & SHAP Drivers -->
+                <div class="glass-card result-card">
+                    <div class="card-header">
+                        <h3>Real-Time Risk Diagnosis</h3>
+                        <span class="latency-badge" id="latency-val">Latency: -- ms</span>
+                    </div>
+
+                    <div class="gauge-wrapper">
+                        <div class="risk-gauge" id="risk-gauge">
+                            <div class="gauge-center">
+                                <span class="risk-percentage" id="risk-pct">1.8%</span>
+                                <span class="risk-sublabel">Fraud Probability</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="triage-status" id="triage-status">
+                        <span class="badge badge-success" id="risk-badge">LOW RISK</span>
+                        <h4 id="recommendation-text">APPROVE TRANSACTION</h4>
+                    </div>
+
+                    <div class="shap-drivers-section">
+                        <h4>Top SHAP Risk Factors</h4>
+                        <div id="drivers-container" class="drivers-list">
+                            <!-- Populated dynamically -->
+                            <div class="empty-state">Run an evaluation to inspect SHAP feature drivers</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: BATCH AUDIT HUB -->
+        <section id="tab-batch" class="tab-content">
+            <div class="glass-card">
+                <h3>Batch Transaction Audit & CSV Processing</h3>
+                <p class="subtitle">Upload transaction CSV files to perform high-throughput risk scoring and generate audit reports.</p>
+
+                <div class="dropzone" id="csv-dropzone">
+                    <div class="dropzone-icon">📁</div>
+                    <h4>Drag & Drop Transaction CSV Here</h4>
+                    <p>or click to browse files</p>
+                    <input type="file" id="csv-file-input" accept=".csv" hidden>
+                </div>
+
+                <div class="batch-controls">
+                    <button class="preset-btn" onclick="generateSampleCSV()">Download Sample CSV Template</button>
+                    <button class="submit-btn" id="run-batch-btn" disabled onclick="processUploadedCSV()">⚡ Audit Transactions</button>
+                </div>
+
+                <div id="batch-summary-cards" class="metrics-grid hidden">
+                    <div class="metric-card">
+                        <span class="metric-title">Total Processed</span>
+                        <span class="metric-value" id="batch-total">0</span>
+                    </div>
+                    <div class="metric-card danger">
+                        <span class="metric-title">Flagged Fraud</span>
+                        <span class="metric-value" id="batch-flagged">0</span>
+                    </div>
+                    <div class="metric-card warning">
+                        <span class="metric-title">Fraud Percentage</span>
+                        <span class="metric-value" id="batch-pct">0.0%</span>
+                    </div>
+                </div>
+
+                <div class="table-wrapper hidden" id="batch-table-wrapper">
+                    <table class="data-table" id="batch-results-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Amount ($)</th>
+                                <th>Distance</th>
+                                <th>Device Risk</th>
+                                <th>Fraud Prob</th>
+                                <th>Risk Level</th>
+                                <th>Recommendation</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: MODEL BENCHMARKS -->
+        <section id="tab-analytics" class="tab-content">
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <span class="metric-title">Champion PR-AUC</span>
+                    <span class="metric-value accent" id="metric-pr-auc">0.9412</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-title">Champion ROC-AUC</span>
+                    <span class="metric-value" id="metric-roc-auc">0.9856</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-title">Cost Loss Reduction</span>
+                    <span class="metric-value green" id="metric-savings">91.4%</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-title">SMOTE Balanced Set</span>
+                    <span class="metric-value" id="metric-samples">15,000</span>
+                </div>
+            </div>
+
+            <div class="grid-2col margin-top">
+                <div class="glass-card">
+                    <h3>Precision-Recall Curve (PR-AUC)</h3>
+                    <div class="chart-container">
+                        <canvas id="prCurveChart"></canvas>
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <h3>ROC Curve (ROC-AUC)</h3>
+                    <div class="chart-container">
+                        <canvas id="rocCurveChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2col margin-top">
+                <div class="glass-card">
+                    <h3>Model Zoo PR-AUC Comparison</h3>
+                    <div class="chart-container">
+                        <canvas id="modelComparisonChart"></canvas>
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <h3>Champion Confusion Matrix</h3>
+                    <div class="cm-grid">
+                        <div class="cm-cell tn">
+                            <span class="cm-val" id="cm-tn">3,680</span>
+                            <span class="cm-lbl">True Negative (Legit)</span>
+                        </div>
+                        <div class="cm-cell fp">
+                            <span class="cm-val" id="cm-fp">25</span>
+                            <span class="cm-lbl">False Positive (False Alarm)</span>
+                        </div>
+                        <div class="cm-cell fn">
+                            <span class="cm-val" id="cm-fn">5</span>
+                            <span class="cm-lbl">False Negative (Missed Fraud)</span>
+                        </div>
+                        <div class="cm-cell tp">
+                            <span class="cm-val" id="cm-tp">40</span>
+                            <span class="cm-lbl">True Positive (Caught Fraud)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: EXPLAINABILITY (SHAP) -->
+        <section id="tab-explainability" class="tab-content">
+            <div class="glass-card">
+                <h3>Global Feature Importance (SHAP Values)</h3>
+                <p class="subtitle">Rankings of key signals driving transaction fraud predictions across 15,000 transactions.</p>
+                <div class="chart-container tall">
+                    <canvas id="shapImportanceChart"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>SentinelGuard AI &bull; High-Frequency Financial Fraud & Anomaly Detection System</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
